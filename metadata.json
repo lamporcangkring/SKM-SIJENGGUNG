@@ -1,0 +1,6 @@
+{
+  "name": "Sistem Indeks Pelayanan Publik",
+  "description": "Dashboard Pemantauan dan Evaluasi Kinerja Penyelenggaraan Pelayanan Publik (PEKPPP)",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
