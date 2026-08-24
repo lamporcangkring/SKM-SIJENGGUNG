@@ -68,18 +68,32 @@ const COMMENTS_POOL = [
 ];
 
 // ── Distribusi harian: 215 responden tersebar 10–22 Agustus 2026 ──
-// (13 hari: 4 hari pertama ramai, 17 Agustus libur/sepi, hari terakhir medium)
-const DAILY_COUNTS = [21, 20, 19, 18, 16, 10, 4, 3, 19, 19, 18, 17, 11];
-// Total = 175... adjust to 215:
-// Hari kerja diperbesar, weekend & libur lebih kecil
-// Revised: [21, 20, 19, 19, 17, 11, 4, 3, 20, 20, 19, 18, 24] → sum=215? check
-// 21+20+19+19+17+11+4+3+20+20+19+18+24 = 215 ✓ (Aug 22 Sat is last push)
+// Kalender Agustus 2026:
+//   Senin 10 ✅ | Selasa 11 ✅ | Rabu 12 ✅ | Kamis 13 ✅ | Jumat 14 ✅
+//   Sabtu 15 ❌ | Minggu 16 ❌ | Senin 17 ❌ (HUT RI) 
+//   Selasa 18 ✅ | Rabu 19 ✅ | Kamis 20 ✅ | Jumat 21 ✅
+//   Sabtu 22 ❌
+//
+// Total hari kerja efektif = 9 hari (10,11,12,13,14,18,19,20,21)
+// 215 responden / 9 hari ≈ 23–28 per hari
 
-const DAILY_SCHEDULE = [21, 20, 19, 19, 17, 11, 4, 3, 20, 20, 19, 18, 24];
-// Verification: 21+20+19+19+17+11+4+3+20+20+19+18+24 = 215
+const DAILY_SCHEDULE = [
+  28,  // 10 Agt (Sen) — hari pertama, antusias tinggi
+  25,  // 11 Agt (Sel)
+  24,  // 12 Agt (Rab)
+  24,  // 13 Agt (Kam)
+  23,  // 14 Agt (Jum)
+   0,  // 15 Agt (SAB) — LIBUR
+   0,  // 16 Agt (MIN) — LIBUR
+   0,  // 17 Agt (Sen) — LIBUR HUT RI ke-81
+  24,  // 18 Agt (Sel)
+  24,  // 19 Agt (Rab)
+  23,  // 20 Agt (Kam)
+  20,  // 21 Agt (Jum) — hari terakhir, mulai berkurang
+   0,  // 22 Agt (SAB) — LIBUR
+];
+// Verifikasi total: 28+25+24+24+23+0+0+0+24+24+23+20+0 = 215 ✅
 
-// Days 0–12 map to: 10,11,12,13,14,15,16,17,18,19,20,21,22 Agustus 2026
-// Working hours (WIB UTC+7): 08:00–15:00
 
 // ── Pseudo-random helper ─────────────────────────────────────────
 // Deterministic, different per (respondent, question)
