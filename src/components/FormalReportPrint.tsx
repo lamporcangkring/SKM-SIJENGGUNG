@@ -399,24 +399,34 @@ export function FormalReportPrint() {
       <div className="mt-10 pt-4 border-t border-slate-300">
         <div className="flex justify-between items-start text-center text-xs">
           
-          <div className="w-60 space-y-1">
-            <p className="font-semibold">Mengetahui,</p>
-            <p className="font-bold">Ketua Tim Penyusun SKM Desa</p>
+          <div className="w-48 space-y-1">
+            <p className="font-semibold">Pembuat Laporan,</p>
+            <p className="font-bold">Kaur TU & Umum</p>
             <div className="h-16 flex items-center justify-center">
-              <span className="text-[10px] text-slate-400 italic">[Tanda Tangan & Stempel Tim]</span>
+              <span className="text-[10px] text-slate-400 italic">[Tanda Tangan]</span>
             </div>
-            <p className="font-bold underline uppercase">SUMARNO, S.Sos.</p>
-            <p className="text-[10px] text-slate-600">NIP. 19780512 200501 1 004</p>
+            <p className="font-bold underline uppercase">SAKHERUN</p>
+            <p className="text-[10px] text-slate-600">Pengelola SKM & SPAK</p>
           </div>
 
-          <div className="w-60 space-y-1">
+          <div className="w-48 space-y-1">
+            <p className="font-semibold">Verifikasi,</p>
+            <p className="font-bold">Sekretaris Desa Sijenggung</p>
+            <div className="h-16 flex items-center justify-center">
+              <span className="text-[10px] text-slate-400 italic">[Tanda Tangan]</span>
+            </div>
+            <p className="font-bold underline uppercase">TEGUH GIANA</p>
+            <p className="text-[10px] text-slate-600">Sekretaris Desa</p>
+          </div>
+
+          <div className="w-48 space-y-1">
             <p className="font-semibold">Sijenggung, {currentDate}</p>
             <p className="font-bold">Kepala Desa Sijenggung</p>
             <div className="h-16 flex items-center justify-center">
-              <span className="text-[10px] text-slate-400 italic">[Tanda Tangan & Stempel Resmi Desa]</span>
+              <span className="text-[10px] text-slate-400 italic">[Tanda Tangan & Stempel]</span>
             </div>
-            <p className="font-bold underline uppercase">SUWARYO</p>
-            <p className="text-[10px] text-slate-600">Kepala Desa Sijenggung</p>
+            <p className="font-bold underline uppercase">SUYONO</p>
+            <p className="text-[10px] text-slate-600">Kepala Desa</p>
           </div>
 
         </div>
