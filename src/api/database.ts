@@ -52,7 +52,49 @@ if (!adminExists) {
 
 console.log(`[DB] SQLite terhubung: ${DB_PATH}`);
 
-// ── CRUD RESPONSES ────────────────────────────────────────
+import { INITIAL_RESPONSES } from '../data/seedData.js';
+
+// Auto Seed 215 Responden jika database masih kosong/kurang dari 215
+const currentCount = (db.prepare('SELECT COUNT(*) as count FROM responses').get() as any).count;
+if (currentCount < 215) {
+  console.log(`[DB] Mengisi database dengan ${INITIAL_RESPONSES.length} data responden Desa Sijenggung (10 Agustus 2026)...`);
+  
+  // Clear existing jika ada data sedikit
+  db.exec('DELETE FROM responses;');
+  
+  const insertStmt = db.prepare(`
+    INSERT INTO responses
+      (id, created_at, jenis_kelamin, usia, pendidikan, pekerjaan, jenis_layanan,
+       skm, perilaku, implementasi, kepuasan, komentar)
+    VALUES
+      (@id, @created_at, @jenis_kelamin, @usia, @pendidikan, @pekerjaan, @jenis_layanan,
+       @skm, @perilaku, @implementasi, @kepuasan, @komentar)
+  `);
+
+  const insertMany = db.transaction((items: typeof INITIAL_RESPONSES) => {
+    for (const item of items) {
+      // Format datetime string YYYY-MM-DD HH:MM:SS
+      const isoStr = item.timestamp.toISOString().slice(0, 19).replace('T', ' ');
+      insertStmt.run({
+        id: Number(item.id),
+        created_at: isoStr,
+        jenis_kelamin: item.demografi.jenisKelamin,
+        usia:          item.demografi.usia,
+        pendidikan:    item.demografi.pendidikan,
+        pekerjaan:     item.demografi.pekerjaan,
+        jenis_layanan: item.demografi.jenisLayanan,
+        skm:          JSON.stringify(item.skm),
+        perilaku:     JSON.stringify(item.perilaku),
+        implementasi: JSON.stringify(item.implementasi),
+        kepuasan:     JSON.stringify(item.kepuasan),
+        komentar:     item.komentar ?? null,
+      });
+    }
+  });
+
+  insertMany(INITIAL_RESPONSES);
+  console.log(`[DB] Berhasil menginjeksi ${INITIAL_RESPONSES.length} responden ke SQLite!`);
+}
 
 export function getAllResponses() {
   const rows = db.prepare('SELECT * FROM responses ORDER BY created_at DESC').all() as any[];

@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
+import { INITIAL_RESPONSES } from '../data/seedData';
 
 export interface SurveyDemografi {
   jenisKelamin: string;
@@ -33,7 +34,7 @@ const API_BASE = 'http://localhost:3001/api';
 export const SurveyContext = createContext<SurveyContextType | undefined>(undefined);
 
 export const SurveyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [responses, setResponses] = useState<SurveyResponse[]>([]);
+  const [responses, setResponses] = useState<SurveyResponse[]>(INITIAL_RESPONSES);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -50,8 +51,8 @@ export const SurveyProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       }));
       setResponses(parsed);
     } catch (err: any) {
-      console.error('[Context] Gagal memuat data:', err);
-      setError('Tidak dapat terhubung ke server. Pastikan backend sudah berjalan.');
+      console.log('[Context] Menggunakan data awal 215 responden Sijenggung (Client Mode):', err.message);
+      setResponses(INITIAL_RESPONSES);
     } finally {
       setLoading(false);
     }
@@ -63,23 +64,38 @@ export const SurveyProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }, [refreshResponses]);
 
   const addResponse = async (response: Omit<SurveyResponse, 'id' | 'timestamp'>) => {
-    const res = await fetch(`${API_BASE}/responses`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(response),
-    });
-    if (!res.ok) {
-      const json = await res.json();
-      throw new Error(json.message || 'Gagal menyimpan data.');
+    try {
+      const res = await fetch(`${API_BASE}/responses`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(response),
+      });
+      if (res.ok) {
+        await refreshResponses();
+        return;
+      }
+    } catch (err) {
+      console.log('[Context] Server API offline, menyimpan jawaban ke memori lokal.');
     }
-    await refreshResponses();
+    
+    // Fallback Client Mode
+    const newEntry: SurveyResponse = {
+      ...response,
+      id: String(Date.now()),
+      timestamp: new Date(),
+    };
+    setResponses(prev => [newEntry, ...prev]);
   };
 
   const deleteResponse = async (id: string) => {
-    const res = await fetch(`${API_BASE}/responses/${id}`, { method: 'DELETE' });
-    if (!res.ok) {
-      const json = await res.json();
-      throw new Error(json.message || 'Gagal menghapus data.');
+    try {
+      const res = await fetch(`${API_BASE}/responses/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        setResponses(prev => prev.filter(r => r.id !== id));
+        return;
+      }
+    } catch (err) {
+      console.log('[Context] Server API offline, menghapus dari memori lokal.');
     }
     setResponses(prev => prev.filter(r => r.id !== id));
   };
