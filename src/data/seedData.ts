@@ -67,32 +67,13 @@ const COMMENTS_POOL = [
   'Harap ada kemudahan akses bagi warga lansia dan penyandang disabilitas.',
 ];
 
-// ── Distribusi harian: 215 responden tersebar 10–22 Agustus 2026 ──
-// Kalender Agustus 2026:
-//   Senin 10 ✅ | Selasa 11 ✅ | Rabu 12 ✅ | Kamis 13 ✅ | Jumat 14 ✅
-//   Sabtu 15 ❌ | Minggu 16 ❌ | Senin 17 ❌ (HUT RI) 
-//   Selasa 18 ✅ | Rabu 19 ✅ | Kamis 20 ✅ | Jumat 21 ✅
-//   Sabtu 22 ❌
-//
-// Total hari kerja efektif = 9 hari (10,11,12,13,14,18,19,20,21)
-// 215 responden / 9 hari ≈ 23–28 per hari
+// ── Distribusi harian: 255 responden tersebar 30 Juni – 19 Agustus 2026 ──
+// 51 Hari (36 hari kerja efektif, libur weekend & 17 Agustus)
 
 const DAILY_SCHEDULE = [
-  28,  // 10 Agt (Sen) — hari pertama, antusias tinggi
-  25,  // 11 Agt (Sel)
-  24,  // 12 Agt (Rab)
-  24,  // 13 Agt (Kam)
-  23,  // 14 Agt (Jum)
-   0,  // 15 Agt (SAB) — LIBUR
-   0,  // 16 Agt (MIN) — LIBUR
-   0,  // 17 Agt (Sen) — LIBUR HUT RI ke-81
-  24,  // 18 Agt (Sel)
-  24,  // 19 Agt (Rab)
-  23,  // 20 Agt (Kam)
-  20,  // 21 Agt (Jum) — hari terakhir, mulai berkurang
-   0,  // 22 Agt (SAB) — LIBUR
+  8,8,8,7,0,0,7,7,7,7,7,0,0,7,7,7,7,7,0,0,7,7,7,7,7,0,0,7,7,7,7,7,0,0,7,7,7,7,7,0,0,7,7,7,7,7,0,0,0,7,7
 ];
-// Verifikasi total: 28+25+24+24+23+0+0+0+24+24+23+20+0 = 215 ✅
+// Verifikasi total: 255 ✅
 
 
 // ── Pseudo-random helper ─────────────────────────────────────────
@@ -141,20 +122,55 @@ const IMPL_DIST: Record<string, [number, number]> = {
   I3: [0.05, 0.70], // avg 3.20
 };
 
-// ── Demografi options & weights ───────────────────────────────────
-const jenisKelaminCycle = (i: number) => (i % 2 === 0 ? 'Laki-laki' : 'Perempuan');
+// ── Demografi Helpers ──
+function getGender(rng: () => number) {
+  return rng() < 0.65 ? 'Perempuan' : 'Laki-Laki';
+}
 
-const usiaOptions    = ['18-25', '26-35', '36-45', '46-55', '>55'];
-const usiaWeights    = [0.13, 0.28, 0.30, 0.18, 0.11];
+function getUsia(rng: () => number) {
+  const r = rng();
+  if (r < 0.3) return '18-25';
+  if (r < 0.65) return '26-35';
+  if (r < 0.9) return '36-45';
+  return '>45';
+}
 
-const pendidikanOptions = ['SD', 'SMP', 'SMA', 'D3/S1', 'S2/S3'];
-const pendidikanWeights = [0.14, 0.24, 0.46, 0.14, 0.02];
+function getPendidikan(rng: () => number) {
+  const r = rng();
+  if (r < 0.4) return 'SMA';
+  if (r < 0.7) return 'S1';
+  if (r < 0.9) return 'SMP';
+  return 'D1-D3-D4';
+}
 
-const pekerjaanOptions = ['Petani', 'Wiraswasta', 'Karyawan Swasta', 'PNS', 'Pelajar/Mahasiswa', 'Lainnya'];
-const pekerjaanWeights = [0.38, 0.17, 0.15, 0.07, 0.08, 0.15];
+function getPekerjaan(rng: () => number) {
+  const r = rng();
+  if (r < 0.4) return 'Wiraswasta';
+  if (r < 0.7) return 'Karyawan Swasta';
+  if (r < 0.85) return 'PNS';
+  return 'Lainnya';
+}
 
-const layananOptions = ['Administrasi Umum', 'Kependudukan', 'Perizinan', 'Pertanahan', 'Kesejahteraan Sosial'];
-const layananWeights = [0.35, 0.28, 0.15, 0.10, 0.12];
+// ── Target Skor (menyesuaikan Excel: IKM ~83.02 (3.32), SPAK ~82.5 (3.30)) ──
+function getSkmScore(index: number, rng: () => number) {
+  const r = rng();
+  if (index === 5 || index === 8) {
+    if (r < 0.15) return 2;
+    if (r < 0.75) return 3;
+    return 4;
+  }
+  return r < 0.32 ? 4 : 3;
+}
+
+function getSpakScore(index: number, rng: () => number) {
+  const r = rng();
+  if (index === 1 || index === 4) {
+    if (r < 0.15) return 2;
+    if (r < 0.75) return 3;
+    return 4;
+  }
+  return r < 0.35 ? 4 : 3;
+}
 
 function weightedChoice<T>(items: T[], weights: number[], r: number): T {
   let cum = 0;
@@ -166,9 +182,9 @@ function weightedChoice<T>(items: T[], weights: number[], r: number): T {
 }
 
 // ── Timestamp builder ─────────────────────────────────────────────
-// Returns ISO string (UTC) for given day offset (0=Aug10) and fraction within work hours
+// Returns ISO string (UTC) for given day offset (0=Jun30) and fraction within work hours
 function buildTimestamp(dayOffset: number, indexInDay: number, totalInDay: number, noise: number): string {
-  const baseDate = new Date('2026-08-10T00:00:00Z'); // UTC midnight Aug 10
+  const baseDate = new Date('2026-06-30T00:00:00Z'); // UTC midnight Jun 30
   // WIB = UTC+7, work hours 08:00–15:00 WIB = 01:00–08:00 UTC
   const workStartUTC = 1 * 3600; // 01:00 UTC = 08:00 WIB
   const workDurationSec = 7 * 3600; // 7 jam
@@ -198,25 +214,23 @@ function generate215Responses(): SurveyResponse[] {
       const rNoise   = h(i, 15);
 
       // Demografi
-      const jenisKelamin = jenisKelaminCycle(i);
-      const usia         = weightedChoice(usiaOptions, usiaWeights, rDemog1);
-      const pendidikan   = weightedChoice(pendidikanOptions, pendidikanWeights, rDemog2);
-      const pekerjaan    = weightedChoice(pekerjaanOptions, pekerjaanWeights, rDemog3);
-      const jenisLayanan = weightedChoice(layananOptions, layananWeights, rDemog4);
+      const jenisKelamin = getGender(() => h(i, 16));
+      const usia         = getUsia(() => h(i, 17));
+      const pendidikan   = getPendidikan(() => h(i, 18));
+      const pekerjaan    = getPekerjaan(() => h(i, 19));
+      const jenisLayanan = weightedChoice(['Administrasi Umum', 'Kependudukan', 'Perizinan', 'Pertanahan', 'Kesejahteraan Sosial'], [0.35, 0.28, 0.15, 0.10, 0.12], rDemog4);
 
       // SKM scores
       const skm: Record<string, number> = {};
-      Object.entries(SKM_DIST).forEach(([key, [p2, p3]], kIdx) => {
-        const r = h(i, 20 + kIdx);
-        skm[key] = scoreOf(r, p2, p3);
-      });
+      for (let k = 0; k < 9; k++) {
+        skm[`U${k+1}`] = getSkmScore(k, () => h(i, 20 + k));
+      }
 
       // SPAK scores
       const perilaku: Record<string, number> = {};
-      Object.entries(SPAK_DIST).forEach(([key, [p2, p3]], kIdx) => {
-        const r = h(i, 30 + kIdx);
-        perilaku[key] = scoreOf(r, p2, p3);
-      });
+      for (let k = 0; k < 7; k++) {
+        perilaku[`P${k+1}`] = getSpakScore(k, () => h(i, 30 + k));
+      }
 
       // Implementasi scores
       const implementasi: Record<string, number> = {};
@@ -225,10 +239,10 @@ function generate215Responses(): SurveyResponse[] {
         implementasi[key] = scoreOf(r, p2, p3);
       });
 
-      // Kepuasan keseluruhan: avg 3.20
+      // Kepuasan keseluruhan
       const rKep = h(i, 50);
       const kepuasan: Record<string, number> = {
-        PS1: scoreOf(rKep, 0.05, 0.75), // 5% skor2, 75% skor3, 20% skor4 → avg 3.15
+        PS1: scoreOf(rKep, 0.05, 0.75),
       };
 
       // Komentar: ~40% responden mengisi komentar

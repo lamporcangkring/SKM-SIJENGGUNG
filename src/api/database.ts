@@ -56,8 +56,8 @@ import { INITIAL_RESPONSES } from '../data/seedData.js';
 
 // Auto Seed 215 Responden jika database masih kosong/kurang dari 215
 const currentCount = (db.prepare('SELECT COUNT(*) as count FROM responses').get() as any).count;
-if (currentCount < 215) {
-  console.log(`[DB] Mengisi database dengan ${INITIAL_RESPONSES.length} data responden Desa Sijenggung (10 – 22 Agustus 2026)...`);
+if (currentCount < 255) {
+  console.log(`[DB] Mengisi database dengan ${INITIAL_RESPONSES.length} data responden Desa Sijenggung (30 Juni – 19 Agustus 2026)...`);
   
   // Clear existing jika ada data sedikit
   db.exec('DELETE FROM responses;');

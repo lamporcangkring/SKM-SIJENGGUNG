@@ -13,7 +13,7 @@ export function ReportDashboard() {
   const [activeTab, setActiveTab] = useState<'ringkasan' | 'demografi' | 'skm' | 'spak'>('ringkasan');
   
   const count = responses.length;
-  const surveyDateStr = '10 \u2013 22 Agustus 2026';
+  const surveyDateStr = '30 Juni – 19 Agustus 2026';
 
   // Calculate SKM
   const skmWeight = count > 0 ? 1 / SKM_QUESTIONS.length : 0;

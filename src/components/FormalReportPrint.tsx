@@ -10,7 +10,7 @@ export function FormalReportPrint() {
   const count = responses.length;
 
   // Tanggal pelaksanaan survei dari dataset
-  const surveyDateStr = '10 – 22 Agustus 2026';
+  const surveyDateStr = '30 Juni – 19 Agustus 2026';
   const surveyTimeStr = '08.00 – 15.00 WIB';
 
   // Calculate SKM (PermenPAN-RB No. 14 Tahun 2017)
@@ -372,7 +372,7 @@ export function FormalReportPrint() {
         
         <div className="space-y-3 text-xs text-justify">
           <p>
-            Berdasarkan pengolahan data survei terhadap <strong>215 responden</strong> yang dilaksanakan pada periode <strong>10 – 22 Agustus 2026</strong>, Pemerintah Desa Sijenggung memperoleh predikat <strong>Baik (Mutu B)</strong> untuk SKM dengan IKM sebesar <strong>{ikmScore.toFixed(2)}</strong> dan predikat <strong>{perilakuGrade?.label ?? 'Baik'}</strong> untuk SPAK dengan skor rata-rata <strong>{totalPerilaku.toFixed(2)}</strong>. Guna meningkatkan kualitas pelayanan publik secara berkelanjutan, berikut adalah area yang perlu terus diperkuat:
+            Berdasarkan pengolahan data survei terhadap <strong>{count} responden</strong> yang dilaksanakan pada periode <strong>{surveyDateStr}</strong>, Pemerintah Desa Sijenggung memperoleh predikat <strong>Baik (Mutu B)</strong> untuk SKM dengan IKM sebesar <strong>{ikmScore.toFixed(2)}</strong> dan predikat <strong>{perilakuGrade?.label ?? 'Baik'}</strong> untuk SPAK dengan skor rata-rata <strong>{totalPerilaku.toFixed(2)}</strong>. Guna meningkatkan kualitas pelayanan publik secara berkelanjutan, berikut adalah area yang perlu terus diperkuat:
           </p>
 
           <div className="pl-4 border-l-2 border-slate-400 space-y-1.5 italic text-[11px]">
