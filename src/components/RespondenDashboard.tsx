@@ -4,7 +4,7 @@ import { useTheme } from '../context/ThemeContext';
 import { Users, PieChart, BarChart2, Activity, FileText } from 'lucide-react';
 import { PieChart as RechartsPieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 
-const COLORS = ['#0ea5e9', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#ec4899'];
+const COLORS = ['#a78bfa', '#f472b6', '#34d399', '#fbbf24', '#fb923c', '#60a5fa'];
 
 export function RespondenDashboard() {
   const { responses } = useSurvey();
@@ -42,8 +42,8 @@ export function RespondenDashboard() {
   }, [responses]);
 
   const cardCls = isDark 
-    ? 'bg-[#111936]/80 backdrop-blur-md rounded-3xl p-6 border border-blue-500/20 shadow-xl' 
-    : 'bg-white rounded-3xl p-6 border border-slate-200 shadow-md';
+    ? 'bg-[#111936]/80 backdrop-blur-md rounded-3xl p-6 border border-slate-700/50 shadow-xl' 
+    : 'bg-white rounded-3xl p-6 shadow-neumorph';
 
   if (count === 0) {
     return (
@@ -76,11 +76,11 @@ export function RespondenDashboard() {
           </p>
         </div>
 
-        <div className={`px-5 py-2.5 rounded-2xl border ${
-          isDark ? 'bg-[#111936] border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+        <div className={`px-5 py-2.5 rounded-2xl ${
+          isDark ? 'bg-[#151e32] border border-slate-700/50' : 'bg-white shadow-neumorph-sm'
         }`}>
           <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Total Responden</div>
-          <div className="text-2xl font-black text-purple-500">
+          <div className="text-2xl font-black bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
             {count} <span className="text-xs font-semibold text-slate-400">Warga</span>
           </div>
         </div>
@@ -143,7 +143,8 @@ export function RespondenDashboard() {
                     color: isDark ? '#ffffff' : '#0f172a' 
                   }} 
                 />
-                <Bar dataKey="value" fill="#10b981" radius={[6, 6, 0, 0]} name="Jumlah Warga" />
+                <Bar dataKey="value" fill="url(#usiaGrad)" radius={[6, 6, 0, 0]} name="Jumlah Warga" />
+                <defs><linearGradient id="usiaGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#34d399" /><stop offset="100%" stopColor="#6ee7b7" /></linearGradient></defs>
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -169,7 +170,8 @@ export function RespondenDashboard() {
                     color: isDark ? '#ffffff' : '#0f172a' 
                   }} 
                 />
-                <Bar dataKey="value" fill="#818cf8" radius={[0, 6, 6, 0]} name="Jumlah Warga" />
+                <Bar dataKey="value" fill="url(#pendGrad)" radius={[0, 6, 6, 0]} name="Jumlah Warga" />
+                <defs><linearGradient id="pendGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor="#818cf8" /><stop offset="100%" stopColor="#c084fc" /></linearGradient></defs>
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -232,7 +234,8 @@ export function RespondenDashboard() {
                     color: isDark ? '#ffffff' : '#0f172a' 
                   }} 
                 />
-                <Bar dataKey="value" fill="#ec4899" radius={[6, 6, 0, 0]} name="Jumlah Akses Layanan" />
+                <Bar dataKey="value" fill="url(#layananGrad)" radius={[6, 6, 0, 0]} name="Jumlah Akses Layanan" />
+                <defs><linearGradient id="layananGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#f472b6" /><stop offset="100%" stopColor="#fb923c" /></linearGradient></defs>
               </BarChart>
             </ResponsiveContainer>
           </div>

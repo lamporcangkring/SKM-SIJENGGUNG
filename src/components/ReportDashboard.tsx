@@ -5,7 +5,7 @@ import { SKM_QUESTIONS, PERILAKU_QUESTIONS, IMPLEMENTASI_QUESTIONS, KEPUASAN_QUE
 import { BarChart2, Users, Award, ShieldCheck, Database, RefreshCw, TrendingUp, Lightbulb, ThumbsUp, Calendar, Filter, PieChart as PieChartIcon } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
-const COLORS = ['#0284c7', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#ec4899'];
+const COLORS = ['#a78bfa', '#f472b6', '#34d399', '#fbbf24', '#fb923c', '#60a5fa'];
 
 export function ReportDashboard() {
   const { responses } = useSurvey();
@@ -93,8 +93,8 @@ export function ReportDashboard() {
   }, [responses]);
 
   const cardCls = isDark 
-    ? 'bg-[#111936]/80 backdrop-blur-md rounded-3xl p-6 border border-blue-500/20 shadow-xl' 
-    : 'bg-white rounded-3xl p-6 border border-slate-200 shadow-md';
+    ? 'bg-[#111936]/80 backdrop-blur-md rounded-3xl p-6 border border-slate-700/50 shadow-xl' 
+    : 'bg-white rounded-3xl p-6 shadow-neumorph';
 
   return (
     <div className="space-y-6 w-full print:hidden">
@@ -118,14 +118,14 @@ export function ReportDashboard() {
 
         <button 
           onClick={() => window.print()} 
-          className="flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-extrabold rounded-2xl shadow-lg transition-all hover:scale-105 cursor-pointer text-xs sm:text-sm"
+          className="flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-400 hover:to-purple-400 text-white font-extrabold rounded-2xl shadow-[0_6px_20px_rgba(99,102,241,0.35)] transition-all hover:scale-105 hover:-translate-y-0.5 cursor-pointer text-xs sm:text-sm"
         >
-          <Database size={17} /> Download Laporan PDF Resmi
+          <Database size={17} /> Download Laporan PDF
         </button>
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex items-center gap-2 overflow-x-auto pb-1">
         {[
           { id: 'ringkasan', label: 'Ringkasan Utama', icon: TrendingUp },
           { id: 'demografi', label: 'Analisis Demografi', icon: PieChartIcon },
@@ -138,12 +138,12 @@ export function ReportDashboard() {
             <button
               key={t.id}
               onClick={() => setActiveTab(t.id as any)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                 isActive
-                  ? 'bg-blue-600 text-white shadow-md'
+                  ? 'bg-indigo-500 text-white shadow-[0_4px_12px_rgba(99,102,241,0.3)] transform -translate-y-0.5'
                   : isDark
-                  ? 'bg-slate-800/50 text-slate-400 hover:text-white'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-[#151e32] text-slate-400 hover:text-white shadow-neumorph-sm'
+                  : 'bg-white text-slate-500 hover:text-indigo-600 shadow-neumorph-sm'
               }`}
             >
               <Icon size={14} />
@@ -157,14 +157,14 @@ export function ReportDashboard() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         
         {/* Total Responden */}
-        <div className={`rounded-3xl p-5 flex flex-col gap-2 border transition-all ${cardCls}`}>
+        <div className={`rounded-3xl p-5 flex flex-col gap-2 transition-all ${isDark ? 'bg-[#111936]/80 border border-slate-700/50 shadow-xl' : 'bg-white shadow-neumorph'}`}>
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-indigo-500/15 text-indigo-500 flex items-center justify-center shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 text-indigo-500 flex items-center justify-center shrink-0">
               <Users size={18} />
             </div>
             <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Responden</div>
           </div>
-          <div className="text-3xl sm:text-4xl font-black">{count}</div>
+          <div className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">{count}</div>
           <div className="text-xs text-slate-500 font-semibold">100% Warga Desa Sijenggung</div>
         </div>
 
@@ -237,7 +237,8 @@ export function ReportDashboard() {
                         color: isDark ? '#ffffff' : '#0f172a' 
                       }} 
                     />
-                    <Bar dataKey="avg" fill="#0284c7" radius={[6, 6, 0, 0]} name="Nilai Rata-rata" />
+                    <Bar dataKey="avg" fill="url(#skmGradient)" radius={[8, 8, 0, 0]} name="Nilai Rata-rata" />
+                    <defs><linearGradient id="skmGradient" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#818cf8" /><stop offset="100%" stopColor="#c084fc" /></linearGradient></defs>
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -266,7 +267,8 @@ export function ReportDashboard() {
                         color: isDark ? '#ffffff' : '#0f172a' 
                       }} 
                     />
-                    <Bar dataKey="avg" fill="#818cf8" radius={[6, 6, 0, 0]} name="Nilai Rata-rata" />
+                    <Bar dataKey="avg" fill="url(#spakGradient)" radius={[8, 8, 0, 0]} name="Nilai Rata-rata" />
+                    <defs><linearGradient id="spakGradient" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#f472b6" /><stop offset="100%" stopColor="#a78bfa" /></linearGradient></defs>
                   </BarChart>
                 </ResponsiveContainer>
               </div>

@@ -114,7 +114,7 @@ export function FeedbackDashboard() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-black tracking-tight mb-2 flex items-center gap-3">
-            <div className="p-2 bg-pink-500/15 text-pink-500 border border-pink-500/25 rounded-2xl">
+            <div className={`p-2 rounded-2xl shadow-neumorph-sm ${isDark ? 'bg-[#151e32] text-pink-400' : 'bg-white text-pink-500'}`}>
               <MessageSquare size={24} />
             </div>
             Kotak Aspirasi & Saran Warga
@@ -125,17 +125,17 @@ export function FeedbackDashboard() {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className={`px-4 py-2 rounded-2xl border text-xs sm:text-sm font-bold ${
-            isDark ? 'bg-[#111936] border-slate-800 text-slate-300' : 'bg-white border-slate-200 text-slate-700 shadow-sm'
+          <div className={`px-4 py-2 rounded-2xl text-xs sm:text-sm font-bold ${
+            isDark ? 'bg-[#151e32] border border-slate-700/50 text-slate-300' : 'bg-white text-slate-700 shadow-neumorph-sm'
           }`}>
-            Menampilkan: <span className="text-pink-500 font-extrabold">{filteredFeedback.length}</span> dari {allFeedback.length} Masukan
+            Menampilkan: <span className="bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent font-extrabold">{filteredFeedback.length}</span> dari {allFeedback.length} Masukan
           </div>
         </div>
       </div>
 
       {/* ── FILTER CONTROLS BAR ───────────────────────────────── */}
-      <div className={`p-5 rounded-3xl border shadow-sm transition-all space-y-4 ${
-        isDark ? 'bg-[#111936]/80 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+      <div className={`p-5 rounded-3xl transition-all space-y-4 ${
+        isDark ? 'bg-[#111936]/80 border border-slate-700/50 shadow-xl' : 'bg-white shadow-neumorph'
       }`}>
         
         {/* Row 1: Search Input */}
@@ -319,10 +319,10 @@ export function FeedbackDashboard() {
           {filteredFeedback.map(item => (
             <div 
               key={item.id} 
-              className={`p-5 sm:p-6 rounded-3xl border transition-all ${
+              className={`p-5 sm:p-6 rounded-3xl transition-all ${
                 isDark 
-                  ? 'bg-[#111936]/80 border-slate-800 hover:border-pink-500/30' 
-                  : 'bg-white border-slate-200 hover:border-pink-300 shadow-sm'
+                  ? 'bg-[#111936]/80 border border-slate-700/50 hover:border-pink-500/30' 
+                  : 'bg-white shadow-neumorph-sm hover:shadow-neumorph'
               }`}
             >
               {/* Card Header: Profil Responden & Waktu */}

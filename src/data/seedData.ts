@@ -129,25 +129,31 @@ function getGender(rng: () => number) {
 
 function getUsia(rng: () => number) {
   const r = rng();
-  if (r < 0.3) return '18-25';
-  if (r < 0.65) return '26-35';
-  if (r < 0.9) return '36-45';
-  return '>45';
+  if (r < 0.05) return '< 17 Tahun';
+  if (r < 0.40) return '17 - 35 Tahun';
+  if (r < 0.85) return '36 - 55 Tahun';
+  return '> 55 Tahun';
 }
 
 function getPendidikan(rng: () => number) {
   const r = rng();
-  if (r < 0.4) return 'SMA';
-  if (r < 0.7) return 'S1';
-  if (r < 0.9) return 'SMP';
-  return 'D1-D3-D4';
+  if (r < 0.05) return 'Tidak Sekolah/Tidak Tamat';
+  if (r < 0.20) return 'Sekolah Dasar';
+  if (r < 0.40) return 'SMP';
+  if (r < 0.75) return 'SMA';
+  if (r < 0.90) return 'Diploma (D1/D2/D3)';
+  return 'D4/S1/S2';
 }
 
 function getPekerjaan(rng: () => number) {
   const r = rng();
-  if (r < 0.4) return 'Wiraswasta';
-  if (r < 0.7) return 'Karyawan Swasta';
-  if (r < 0.85) return 'PNS';
+  if (r < 0.20) return 'Petani';
+  if (r < 0.35) return 'Pedagang';
+  if (r < 0.50) return 'Wirausaha';
+  if (r < 0.70) return 'Pegawai Swasta';
+  if (r < 0.85) return 'ASN (PNS/PPPK)';
+  if (r < 0.90) return 'TNI';
+  if (r < 0.95) return 'POLRI';
   return 'Lainnya';
 }
 

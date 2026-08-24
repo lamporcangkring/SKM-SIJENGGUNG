@@ -44,7 +44,7 @@ export function AdminPanel() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-black tracking-tight flex items-center gap-3">
-            <div className="p-2 bg-rose-500/15 text-rose-500 border border-rose-500/25 rounded-2xl">
+            <div className={`p-2 rounded-2xl shadow-neumorph-sm ${isDark ? 'bg-[#151e32] text-indigo-400' : 'bg-white text-indigo-600'}`}>
               <Users size={24} />
             </div>
             Data Responden Masuk
@@ -55,19 +55,19 @@ export function AdminPanel() {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className={`px-4 py-2 rounded-2xl border text-xs sm:text-sm font-bold ${
-            isDark ? 'bg-[#111936] border-slate-700/60 text-slate-300' : 'bg-white border-slate-200 text-slate-700 shadow-sm'
+          <div className={`px-4 py-2 rounded-2xl text-xs sm:text-sm font-bold ${
+            isDark ? 'bg-[#151e32] border border-slate-700/50 text-slate-300' : 'bg-white text-slate-700 shadow-neumorph-sm'
           }`}>
-            Total Data: <span className="text-rose-500 font-extrabold">{responses.length}</span>
+            Total Data: <span className="bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent font-extrabold">{responses.length}</span>
           </div>
 
           <button 
             onClick={refreshResponses} 
             disabled={loading}
-            className={`flex items-center gap-2 px-4 py-2 text-xs sm:text-sm font-bold rounded-2xl border transition-colors cursor-pointer disabled:opacity-50 ${
+            className={`flex items-center gap-2 px-4 py-2 text-xs sm:text-sm font-bold rounded-2xl transition-all cursor-pointer disabled:opacity-50 ${
               isDark 
-                ? 'bg-[#162039] hover:bg-[#1e294b] text-white border-slate-700' 
-                : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-300 shadow-sm'
+                ? 'bg-[#162039] hover:bg-[#1e294b] text-white border border-slate-700' 
+                : 'bg-white hover:bg-slate-50 text-slate-700 shadow-neumorph-sm'
             }`}
           >
             <RefreshCw size={15} className={loading ? 'animate-spin text-cyan-500' : ''} />
@@ -92,10 +92,10 @@ export function AdminPanel() {
           placeholder="Cari berdasarkan pekerjaan, jenis layanan, usia, ID responden..."
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className={`w-full border rounded-2xl pl-11 pr-4 py-3.5 text-xs sm:text-sm font-medium focus:outline-none transition-colors ${
+          className={`w-full rounded-2xl pl-11 pr-4 py-3.5 text-xs sm:text-sm font-medium focus:outline-none transition-all ${
             isDark 
-              ? 'bg-[#111936]/80 border-slate-700 text-white placeholder-slate-500 focus:border-cyan-400' 
-              : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 focus:border-blue-500 shadow-sm'
+              ? 'bg-[#111936]/80 border border-slate-700 text-white placeholder-slate-500 focus:border-indigo-400' 
+              : 'bg-white text-slate-900 placeholder-slate-400 focus:shadow-neumorph shadow-neumorph-inset'
           }`}
         />
       </div>
@@ -116,15 +116,15 @@ export function AdminPanel() {
           {filtered.map((r, idx) => (
             <div 
               key={r.id} 
-              className={`rounded-3xl border transition-all overflow-hidden ${
+              className={`rounded-3xl transition-all overflow-hidden ${
                 isDark 
-                  ? 'bg-[#111936]/80 border-slate-800 hover:border-slate-700' 
-                  : 'bg-white border-slate-200 hover:border-slate-300 shadow-sm'
+                  ? 'bg-[#111936]/80 border border-slate-700/50 hover:border-indigo-500/30' 
+                  : 'bg-white shadow-neumorph-sm hover:shadow-neumorph'
               }`}
             >
               {/* Row Header */}
               <div className="flex items-center gap-4 p-4 sm:p-5">
-                <div className="w-10 h-10 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-cyan-400 font-black text-sm flex items-center justify-center shrink-0 border border-blue-500/20">
+                <div className={`w-10 h-10 rounded-2xl font-black text-sm flex items-center justify-center shrink-0 ${isDark ? 'bg-indigo-500/15 text-indigo-400' : 'bg-gradient-to-br from-indigo-500/15 to-purple-500/15 text-indigo-600'}`}>
                   {responses.length - responses.findIndex(x => x.id === r.id)}
                 </div>
 
