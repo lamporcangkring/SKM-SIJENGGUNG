@@ -120,6 +120,9 @@ export function AdminLogin({ onSuccess, onBackToPublic }: AdminLoginProps) {
           <p className={`text-xs mt-1 font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
             Pemerintah Desa Sijenggung
           </p>
+          <div className="mt-3 inline-block px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-500 dark:text-cyan-400 text-[11px] font-bold">
+            🔑 Default: <span className="font-extrabold text-blue-600 dark:text-cyan-300">admin</span> / <span className="font-extrabold text-blue-600 dark:text-cyan-300">admin123</span>
+          </div>
         </div>
 
         {error && (

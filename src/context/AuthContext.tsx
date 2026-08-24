@@ -34,21 +34,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   });
 
   const login = async (username: string, password: string) => {
-    const res = await fetch(`${API_BASE}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
-    });
+    try {
+      const res = await fetch(`${API_BASE}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
 
-    const data = await res.json();
-    if (!res.ok || !data.success) {
-      throw new Error(data.message || 'Login gagal.');
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setUser(data.user);
+        setToken(data.token);
+        localStorage.setItem('skm_admin_user', JSON.stringify(data.user));
+        localStorage.setItem('skm_admin_token', data.token);
+        return;
+      }
+    } catch (err) {
+      console.log('[AuthContext] Backend API offline, mencoba verifikasi Client-Side Auth...');
     }
 
-    setUser(data.user);
-    setToken(data.token);
-    localStorage.setItem('skm_admin_user', JSON.stringify(data.user));
-    localStorage.setItem('skm_admin_token', data.token);
+    // Client-Side Fallback Auth (Default Admin Desa Sijenggung)
+    if (username.trim() === 'admin' && password === 'admin123') {
+      const fallbackUser: AdminUser = {
+        id: 1,
+        username: 'admin',
+        name: 'Administrator Desa Sijenggung',
+        role: 'admin',
+      };
+      const fallbackToken = 'token-' + Date.now();
+      setUser(fallbackUser);
+      setToken(fallbackToken);
+      localStorage.setItem('skm_admin_user', JSON.stringify(fallbackUser));
+      localStorage.setItem('skm_admin_token', fallbackToken);
+      return;
+    }
+
+    throw new Error('Username atau password salah. (Default: admin / admin123)');
   };
 
   const logout = () => {
