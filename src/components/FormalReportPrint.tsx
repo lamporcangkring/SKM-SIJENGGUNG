@@ -100,8 +100,9 @@ export function FormalReportPrint() {
     <div className="hidden print:block w-full bg-white text-slate-900 font-sans text-xs pb-12 leading-relaxed">
       
       {/* ── KOP SURAT RESMI PEMERINTAH DESA ───────────────────── */}
-      <div className="border-b-4 border-double border-black pb-4 mb-6 text-center relative">
-        <div className="text-center space-y-0.5">
+      <div className="border-b-4 border-double border-black pb-4 mb-6 relative flex items-center justify-center">
+        <img src="/logo-banjarnegara.png" alt="Logo Banjarnegara" className="absolute left-8 w-24 h-24 object-contain grayscale-0 print:grayscale-0" />
+        <div className="text-center space-y-0.5 px-32">
           <h3 className="text-sm font-bold tracking-widest uppercase text-slate-700">PEMERINTAH KABUPATEN BANJARNEGARA</h3>
           <h3 className="text-base font-extrabold tracking-wider uppercase text-slate-800">KECAMATAN BANJARMANGU</h3>
           <h1 className="text-2xl font-black tracking-widest uppercase text-black my-1">PEMERINTAH DESA SIJENGGUNG</h1>
