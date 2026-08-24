@@ -94,8 +94,8 @@ export function AdminDashboard() {
         
         {/* Left: Brand Identity */}
         <Link to="/admin" className="flex items-center gap-3">
-          <div className={`p-2 rounded-2xl shrink-0 shadow-neumorph-sm ${isDark ? 'bg-[#151e32] text-indigo-400' : 'bg-white text-indigo-600'}`}>
-            <Shield size={20} />
+          <div className={`p-2 rounded-2xl shrink-0 shadow-neumorph-sm flex items-center justify-center ${isDark ? 'bg-[#151e32]' : 'bg-white'}`}>
+            <img src="/logo-banjarnegara.png" alt="Logo" className="w-5 h-5 object-contain drop-shadow-md" />
           </div>
           <div>
             <h1 className="text-sm sm:text-base font-black tracking-tight flex items-center gap-1.5 leading-tight">

@@ -166,8 +166,8 @@ export function ReportDashboard() {
             <Calendar size={13} /> Periode: {surveyDateStr}
           </div>
           <h1 className="text-2xl sm:text-3xl font-black tracking-tight mb-1 flex items-center gap-3">
-            <div className={`p-2 rounded-2xl shadow-neumorph-sm ${isDark ? 'bg-[#151e32] text-indigo-400' : 'bg-white text-indigo-600'}`}>
-              <BarChart2 size={24} />
+            <div className={`p-2 rounded-2xl shadow-neumorph-sm flex items-center justify-center ${isDark ? 'bg-[#151e32]' : 'bg-white'}`}>
+              <img src="/logo-banjarnegara.png" alt="Logo Banjarnegara" className="w-8 h-8 object-contain drop-shadow-md" />
             </div>
             Dashboard Analitik SKM & SPAK
           </h1>
