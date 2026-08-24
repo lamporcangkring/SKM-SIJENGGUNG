@@ -50,5 +50,15 @@
     display: none !important;
   }
 
+  /* Prevent page breaks inside cards, charts and tables */
+  .grid > div, table, .space-y-10 > div {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
   /* Make charts visibility better on print if needed */
+  .recharts-wrapper {
+    width: 100% !important;
+    height: 100% !important;
+  }
 }

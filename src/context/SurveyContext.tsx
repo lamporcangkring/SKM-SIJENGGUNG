@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 
 export interface SurveyDemografi {
   jenisKelamin: string;
@@ -21,78 +21,71 @@ export interface SurveyResponse {
 
 interface SurveyContextType {
   responses: SurveyResponse[];
-  addResponse: (response: Omit<SurveyResponse, 'id' | 'timestamp'>) => void;
-  resetResponses: () => void;
-  addMockData: () => void;
+  loading: boolean;
+  error: string | null;
+  addResponse: (response: Omit<SurveyResponse, 'id' | 'timestamp'>) => Promise<void>;
+  deleteResponse: (id: string) => Promise<void>;
+  refreshResponses: () => Promise<void>;
 }
+
+const API_BASE = 'http://localhost:3001/api';
 
 export const SurveyContext = createContext<SurveyContextType | undefined>(undefined);
 
-export const SurveyProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
+export const SurveyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [responses, setResponses] = useState<SurveyResponse[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (responses.length === 0) {
-      addMockData();
+  const refreshResponses = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(`${API_BASE}/responses`);
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
+      const json = await res.json();
+      const parsed: SurveyResponse[] = json.data.map((r: any) => ({
+        ...r,
+        timestamp: new Date(r.timestamp),
+      }));
+      setResponses(parsed);
+    } catch (err: any) {
+      console.error('[Context] Gagal memuat data:', err);
+      setError('Tidak dapat terhubung ke server. Pastikan backend sudah berjalan.');
+    } finally {
+      setLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const addResponse = (response: Omit<SurveyResponse, 'id' | 'timestamp'>) => {
-    setResponses(prev => [
-      ...prev,
-      { ...response, id: Math.random().toString(36).substring(7), timestamp: new Date() }
-    ]);
+  // Load data saat pertama mount
+  useEffect(() => {
+    refreshResponses();
+  }, [refreshResponses]);
+
+  const addResponse = async (response: Omit<SurveyResponse, 'id' | 'timestamp'>) => {
+    const res = await fetch(`${API_BASE}/responses`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(response),
+    });
+    if (!res.ok) {
+      const json = await res.json();
+      throw new Error(json.message || 'Gagal menyimpan data.');
+    }
+    await refreshResponses();
   };
 
-  const resetResponses = () => setResponses([]);
-
-  const addMockData = () => {
-    const mocks: SurveyResponse[] = Array.from({ length: 99 }).map((_, i) => ({
-      id: `mock-${i}`,
-      skm: {
-        U1: Math.floor(Math.random() * 2) + 3,
-        U2: Math.floor(Math.random() * 2) + 3,
-        U3: Math.floor(Math.random() * 2) + 3,
-        U4: Math.floor(Math.random() * 2) + 3,
-        U5: 4,
-        U6: Math.floor(Math.random() * 2) + 3,
-        U7: Math.floor(Math.random() * 2) + 3,
-        U8: Math.floor(Math.random() * 2) + 3,
-        U9: Math.floor(Math.random() * 2) + 3,
-      },
-      perilaku: {
-        P1: Math.floor(Math.random() * 2) + 3,
-        P2: Math.floor(Math.random() * 2) + 3,
-        P3: Math.floor(Math.random() * 2) + 3,
-        P4: Math.floor(Math.random() * 2) + 3,
-        P5: Math.floor(Math.random() * 2) + 3,
-        P6: Math.floor(Math.random() * 2) + 3,
-        P7: Math.floor(Math.random() * 2) + 3,
-      },
-      implementasi: {
-        I1: Math.floor(Math.random() * 2) + 3,
-        I2: Math.floor(Math.random() * 2) + 3,
-        I3: Math.floor(Math.random() * 2) + 3,
-      },
-      kepuasan: {
-        PS1: Math.floor(Math.random() * 2) + 3,
-      },
-      demografi: {
-        jenisKelamin: Math.random() > 0.4 ? 'Laki-laki' : 'Perempuan',
-        usia: ['18-25', '26-35', '36-45', '46-55', '>55'][Math.floor(Math.random() * 5)],
-        pendidikan: ['SD', 'SMP', 'SMA', 'D3/S1', 'S2/S3'][Math.floor(Math.random() * 5)],
-        pekerjaan: ['Petani', 'PNS', 'Wiraswasta', 'Karyawan Swasta', 'Pelajar/Mahasiswa', 'Lainnya'][Math.floor(Math.random() * 6)],
-        jenisLayanan: ['Kependudukan', 'Perizinan', 'Pertanahan', 'Kesejahteraan Sosial', 'Administrasi Umum'][Math.floor(Math.random() * 5)],
-      },
-      komentar: Math.random() > 0.5 ? ['Pelayanan sudah sangat baik, pertahankan.', 'Fasilitas ruang tunggu perlu ditambah kipas angin.', 'Proses surat menyurat sangat cepat dan mudah.', 'Petugas ramah dan informatif.', 'Mohon diperjelas lagi persyaratan untuk surat pengantar RT/RW.'][Math.floor(Math.random() * 5)] : undefined,
-      timestamp: new Date()
-    }));
-    setResponses(mocks);
-  }
+  const deleteResponse = async (id: string) => {
+    const res = await fetch(`${API_BASE}/responses/${id}`, { method: 'DELETE' });
+    if (!res.ok) {
+      const json = await res.json();
+      throw new Error(json.message || 'Gagal menghapus data.');
+    }
+    setResponses(prev => prev.filter(r => r.id !== id));
+  };
 
   return (
-    <SurveyContext.Provider value={{ responses, addResponse, resetResponses, addMockData }}>
+    <SurveyContext.Provider value={{ responses, loading, error, addResponse, deleteResponse, refreshResponses }}>
       {children}
     </SurveyContext.Provider>
   );
@@ -102,4 +95,4 @@ export const useSurvey = () => {
   const context = useContext(SurveyContext);
   if (!context) throw new Error('useSurvey must be used within SurveyProvider');
   return context;
-}
+};

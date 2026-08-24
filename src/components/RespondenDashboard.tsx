@@ -1,12 +1,14 @@
 import React, { useMemo } from 'react';
 import { useSurvey } from '../context/SurveyContext';
+import { useTheme } from '../context/ThemeContext';
 import { Users, PieChart, BarChart2, Activity, FileText } from 'lucide-react';
 import { PieChart as RechartsPieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 
-const COLORS = ['#38bdf8', '#818cf8', '#34d399', '#fbbf24', '#f87171', '#c084fc'];
+const COLORS = ['#0ea5e9', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#ec4899'];
 
 export function RespondenDashboard() {
   const { responses } = useSurvey();
+  const { isDark } = useTheme();
   const count = responses.length;
 
   const demografiData = useMemo(() => {
@@ -32,55 +34,54 @@ export function RespondenDashboard() {
 
     return {
       jenisKelamin: formatData(jenisKelamin),
-      usia: formatData(usia).sort((a, b) => a.name.localeCompare(b.name)), // Sort by age group label
+      usia: formatData(usia).sort((a, b) => a.name.localeCompare(b.name)),
       pendidikan: formatData(pendidikan),
       pekerjaan: formatData(pekerjaan),
       jenisLayanan: formatData(jenisLayanan),
     };
   }, [responses]);
 
-  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index, name }: any) => {
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-    const x = cx + radius * Math.cos(-midAngle * Math.PI / 180);
-    const y = cy + radius * Math.sin(-midAngle * Math.PI / 180);
-  
-    return percent > 0.05 ? (
-      <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" fontSize={12} fontWeight="bold">
-        {`${(percent * 100).toFixed(0)}%`}
-      </text>
-    ) : null;
-  };
+  const cardCls = isDark 
+    ? 'bg-[#111936]/80 backdrop-blur-md rounded-3xl p-6 border border-blue-500/20 shadow-xl' 
+    : 'bg-white rounded-3xl p-6 border border-slate-200 shadow-md';
 
   if (count === 0) {
     return (
-      <div className="p-6 lg:p-10 max-w-6xl mx-auto flex flex-col items-center justify-center min-h-[60vh]">
-        <div className="w-24 h-24 bg-slate-800 rounded-full flex items-center justify-center mb-6">
-          <Users size={48} className="text-slate-500" />
+      <div className="p-6 max-w-6xl mx-auto flex flex-col items-center justify-center min-h-[50vh] text-center">
+        <div className={`w-20 h-20 rounded-full flex items-center justify-center mb-4 ${
+          isDark ? 'bg-slate-800 text-slate-500' : 'bg-slate-100 text-slate-400'
+        }`}>
+          <Users size={40} />
         </div>
-        <h2 className="text-2xl font-bold text-white mb-2">Belum Ada Data Responden</h2>
-        <p className="text-slate-400 max-w-md text-center">Data demografi responden akan muncul di sini setelah ada yang mengisi form survei.</p>
+        <h2 className="text-xl font-bold mb-2">Belum Ada Data Responden</h2>
+        <p className="text-slate-400 max-w-md text-xs sm:text-sm">Data demografi responden akan muncul otomatis setelah warga mengisi formulir survei.</p>
       </div>
     );
   }
 
   return (
-    <div className="p-6 lg:p-10 max-w-6xl mx-auto space-y-10">
+    <div className="space-y-6 w-full">
+      
+      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight mb-2 flex items-center gap-3">
-            <div className="p-2 bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded-lg">
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight mb-2 flex items-center gap-3">
+            <div className="p-2 bg-purple-500/15 text-purple-500 border border-purple-500/25 rounded-2xl">
               <Users size={24} />
             </div>
-            Data Demografi Responden
+            Demografi & Profil Responden
           </h1>
-          <p className="text-purple-200/80 font-medium max-w-2xl">
-            Infografis profil responden yang telah berpartisipasi dalam pengisian survei SKM dan Perilaku Antikorupsi.
+          <p className={`text-xs sm:text-sm font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+            Infografis latar belakang warga yang telah berpartisipasi dalam pengisian survei.
           </p>
         </div>
-        <div className="bg-[#1e294b]/80 backdrop-blur-md px-6 py-3 rounded-2xl border border-purple-500/30 shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
-          <div className="text-sm font-medium text-slate-400 uppercase tracking-wider mb-1">Total Responden</div>
-          <div className="text-3xl font-black text-white flex items-center gap-2">
-            {count} <span className="text-lg font-medium text-slate-400">Orang</span>
+
+        <div className={`px-5 py-2.5 rounded-2xl border ${
+          isDark ? 'bg-[#111936] border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+        }`}>
+          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Total Responden</div>
+          <div className="text-2xl font-black text-purple-500">
+            {count} <span className="text-xs font-semibold text-slate-400">Warga</span>
           </div>
         </div>
       </div>
@@ -88,131 +89,150 @@ export function RespondenDashboard() {
       <div className="grid lg:grid-cols-2 gap-8">
         
         {/* Jenis Kelamin Chart */}
-        <div className="bg-[#1e294b]/80 backdrop-blur-md rounded-3xl p-6 border border-blue-500/30 shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
-          <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-            <PieChart size={20} className="text-blue-400" />
+        <div className={cardCls}>
+          <h2 className="text-base sm:text-lg font-bold mb-4 flex items-center gap-2">
+            <PieChart size={18} className="text-blue-500" />
             Proporsi Jenis Kelamin
           </h2>
-          <div className="h-[300px] w-full">
+          <div className="h-[280px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <RechartsPieChart>
                 <Pie
                   data={demografiData.jenisKelamin}
                   cx="50%"
                   cy="50%"
-                  labelLine={false}
-                  label={renderCustomizedLabel}
-                  outerRadius={100}
+                  outerRadius={90}
                   fill="#8884d8"
                   dataKey="value"
+                  label={({ name, percent }: any) => `${name} (${(percent * 100).toFixed(0)}%)`}
                 >
-                  {demografiData.jenisKelamin.map((entry, index) => (
+                  {demografiData.jenisKelamin.map((_, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip 
-                  contentStyle={{ borderRadius: '12px', border: '1px solid rgba(59, 130, 246, 0.3)', backgroundColor: '#0f172a', boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)' }}
-                  itemStyle={{ fontWeight: 'bold' }}
+                  contentStyle={{ 
+                    borderRadius: '12px', 
+                    backgroundColor: isDark ? '#0f172a' : '#ffffff', 
+                    borderColor: isDark ? '#334155' : '#cbd5e1',
+                    color: isDark ? '#ffffff' : '#0f172a' 
+                  }} 
                 />
-                <Legend />
               </RechartsPieChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* Usia Chart */}
-        <div className="bg-[#1e294b]/80 backdrop-blur-md rounded-3xl p-6 border border-emerald-500/30 shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
-          <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-            <BarChart2 size={20} className="text-emerald-400" />
-            Distribusi Usia
+        <div className={cardCls}>
+          <h2 className="text-base sm:text-lg font-bold mb-4 flex items-center gap-2">
+            <BarChart2 size={18} className="text-emerald-500" />
+            Distribusi Kelompok Usia (Tahun)
           </h2>
-          <div className="h-[300px] w-full">
+          <div className="h-[280px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={demografiData.usia} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8' }} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8' }} dx={-10} />
+              <BarChart data={demografiData.usia} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? '#1e293b' : '#e2e8f0'} />
+                <XAxis dataKey="name" tick={{ fill: isDark ? '#94a3b8' : '#64748b', fontSize: 11 }} />
+                <YAxis allowDecimals={false} tick={{ fill: isDark ? '#94a3b8' : '#64748b', fontSize: 11 }} />
                 <Tooltip 
-                  cursor={{ fill: 'rgba(52, 211, 153, 0.1)' }}
-                  contentStyle={{ borderRadius: '12px', border: '1px solid rgba(52, 211, 153, 0.3)', backgroundColor: '#0f172a', boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)' }}
+                  contentStyle={{ 
+                    borderRadius: '12px', 
+                    backgroundColor: isDark ? '#0f172a' : '#ffffff', 
+                    borderColor: isDark ? '#334155' : '#cbd5e1',
+                    color: isDark ? '#ffffff' : '#0f172a' 
+                  }} 
                 />
-                <Bar dataKey="value" fill="#34d399" radius={[6, 6, 0, 0]} name="Jumlah" />
+                <Bar dataKey="value" fill="#10b981" radius={[6, 6, 0, 0]} name="Jumlah Warga" />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Pendidikan Chart */}
-        <div className="bg-[#1e294b]/80 backdrop-blur-md rounded-3xl p-6 border border-indigo-500/30 shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
-          <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-            <Activity size={20} className="text-indigo-400" />
-            Tingkat Pendidikan
+        {/* Tingkat Pendidikan */}
+        <div className={cardCls}>
+          <h2 className="text-base sm:text-lg font-bold mb-4 flex items-center gap-2">
+            <Activity size={18} className="text-indigo-500" />
+            Tingkat Pendidikan Terakhir
           </h2>
-          <div className="h-[300px] w-full">
+          <div className="h-[280px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={demografiData.pendidikan} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" />
-                <XAxis type="number" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8' }} />
-                <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8' }} width={80} />
+              <BarChart data={demografiData.pendidikan} layout="vertical" margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke={isDark ? '#1e293b' : '#e2e8f0'} />
+                <XAxis type="number" allowDecimals={false} tick={{ fill: isDark ? '#94a3b8' : '#64748b', fontSize: 11 }} />
+                <YAxis dataKey="name" type="category" width={80} tick={{ fill: isDark ? '#94a3b8' : '#64748b', fontSize: 11 }} />
                 <Tooltip 
-                  cursor={{ fill: 'rgba(129, 140, 248, 0.1)' }}
-                  contentStyle={{ borderRadius: '12px', border: '1px solid rgba(129, 140, 248, 0.3)', backgroundColor: '#0f172a', boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)' }}
+                  contentStyle={{ 
+                    borderRadius: '12px', 
+                    backgroundColor: isDark ? '#0f172a' : '#ffffff', 
+                    borderColor: isDark ? '#334155' : '#cbd5e1',
+                    color: isDark ? '#ffffff' : '#0f172a' 
+                  }} 
                 />
-                <Bar dataKey="value" fill="#818cf8" radius={[0, 6, 6, 0]} name="Jumlah" />
+                <Bar dataKey="value" fill="#818cf8" radius={[0, 6, 6, 0]} name="Jumlah Warga" />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Pekerjaan Chart */}
-        <div className="bg-[#1e294b]/80 backdrop-blur-md rounded-3xl p-6 border border-amber-500/30 shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
-          <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-            <PieChart size={20} className="text-amber-400" />
-            Pekerjaan Utama
+        {/* Pekerjaan Utama */}
+        <div className={cardCls}>
+          <h2 className="text-base sm:text-lg font-bold mb-4 flex items-center gap-2">
+            <PieChart size={18} className="text-amber-500" />
+            Pekerjaan Utama Responden
           </h2>
-          <div className="h-[300px] w-full">
+          <div className="h-[280px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <RechartsPieChart>
                 <Pie
                   data={demografiData.pekerjaan}
                   cx="50%"
                   cy="50%"
-                  innerRadius={60}
-                  outerRadius={100}
+                  innerRadius={50}
+                  outerRadius={85}
                   fill="#8884d8"
-                  paddingAngle={5}
+                  paddingAngle={4}
                   dataKey="value"
+                  label={({ name, percent }: any) => `${name} (${(percent * 100).toFixed(0)}%)`}
                 >
-                  {demografiData.pekerjaan.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  {demografiData.pekerjaan.map((_, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[(index + 2) % COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip 
-                  contentStyle={{ borderRadius: '12px', border: '1px solid rgba(251, 191, 36, 0.3)', backgroundColor: '#0f172a', boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)' }}
+                  contentStyle={{ 
+                    borderRadius: '12px', 
+                    backgroundColor: isDark ? '#0f172a' : '#ffffff', 
+                    borderColor: isDark ? '#334155' : '#cbd5e1',
+                    color: isDark ? '#ffffff' : '#0f172a' 
+                  }} 
                 />
-                <Legend layout="vertical" verticalAlign="middle" align="right" />
               </RechartsPieChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* Jenis Layanan Chart */}
-        <div className="bg-[#1e294b]/80 backdrop-blur-md rounded-3xl p-6 border border-pink-500/30 shadow-[0_8px_32px_rgba(0,0,0,0.3)] lg:col-span-2">
-          <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-            <FileText size={20} className="text-pink-400" />
-            Jenis Layanan yang Diakses
+        <div className={`lg:col-span-2 ${cardCls}`}>
+          <h2 className="text-base sm:text-lg font-bold mb-4 flex items-center gap-2">
+            <FileText size={18} className="text-pink-500" />
+            Sebaran Jenis Layanan yang Diakses Warga
           </h2>
-          <div className="h-[350px] w-full">
+          <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={demografiData.jenisLayanan} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12 }} dy={10} interval={0} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8' }} dx={-10} allowDecimals={false} />
+              <BarChart data={demografiData.jenisLayanan} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? '#1e293b' : '#e2e8f0'} />
+                <XAxis dataKey="name" tick={{ fill: isDark ? '#94a3b8' : '#64748b', fontSize: 11 }} />
+                <YAxis allowDecimals={false} tick={{ fill: isDark ? '#94a3b8' : '#64748b', fontSize: 11 }} />
                 <Tooltip 
-                  cursor={{ fill: 'rgba(236, 72, 153, 0.1)' }}
-                  contentStyle={{ borderRadius: '12px', border: '1px solid rgba(244, 114, 182, 0.3)', backgroundColor: '#0f172a', boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)' }}
+                  contentStyle={{ 
+                    borderRadius: '12px', 
+                    backgroundColor: isDark ? '#0f172a' : '#ffffff', 
+                    borderColor: isDark ? '#334155' : '#cbd5e1',
+                    color: isDark ? '#ffffff' : '#0f172a' 
+                  }} 
                 />
-                <Bar dataKey="value" fill="#f472b6" radius={[6, 6, 0, 0]} name="Jumlah" maxBarSize={60} />
+                <Bar dataKey="value" fill="#ec4899" radius={[6, 6, 0, 0]} name="Jumlah Akses Layanan" />
               </BarChart>
             </ResponsiveContainer>
           </div>
