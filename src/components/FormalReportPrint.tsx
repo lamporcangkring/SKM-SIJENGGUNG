@@ -10,8 +10,8 @@ export function FormalReportPrint() {
   const count = responses.length;
 
   // Tanggal pelaksanaan survei dari dataset
-  const surveyDateStr = '10 Agustus 2026';
-  const surveyTimeStr = '08.00 – 14.00 WIB';
+  const surveyDateStr = '10 – 22 Agustus 2026';
+  const surveyTimeStr = '08.00 – 15.00 WIB';
 
   // Calculate SKM (PermenPAN-RB No. 14 Tahun 2017)
   const skmWeight = count > 0 ? 1 / SKM_QUESTIONS.length : 0;
@@ -44,7 +44,7 @@ export function FormalReportPrint() {
 
   const getPerilakuGrade = (score: number) => {
     if (score >= 3.26) return { grade: 'A', label: 'Sangat Baik (Sangat Berintegritas / Etis)' };
-    if (score >= 2.51) return { grade: 'B', label: 'Baik' };
+    if (score >= 2.51) return { grade: 'B', label: 'Baik (Berintegritas)' };
     if (score >= 1.76) return { grade: 'C', label: 'Kurang Baik' };
     return { grade: 'D', label: 'Tidak Baik' };
   };
@@ -358,7 +358,7 @@ export function FormalReportPrint() {
             <tr className="font-bold bg-slate-200 text-black">
               <td colSpan={2} className="border border-black p-1.5 text-right text-xs">SKOR INDEKS PERILAKU ANTIKORUPSI (SPAK) KESELURUHAN</td>
               <td className="border border-black p-1.5 text-center text-sm font-black text-indigo-800">{totalPerilaku.toFixed(2)}</td>
-              <td className="border border-black p-1.5 text-center text-xs font-black text-indigo-700">Mutu A (Sangat Etis)</td>
+              <td className="border border-black p-1.5 text-center text-xs font-black text-indigo-700">{perilakuGrade ? `Mutu ${perilakuGrade.grade}` : '-'}</td>
             </tr>
           </tfoot>
         </table>
@@ -372,13 +372,15 @@ export function FormalReportPrint() {
         
         <div className="space-y-3 text-xs text-justify">
           <p>
-            Berdasarkan pengolahan data terhadap 215 responden pada 10 Agustus 2026, Pemerintah Desa Sijenggung memperoleh predikat <strong>Sangat Baik (Mutu A)</strong> untuk SKM dan <strong>Sangat Etis (Mutu A)</strong> untuk SPAK. Kendati demikian, guna mempertahankan mutu pelayanan publik prima, berikut adalah area yang terus diperkuat:
+            Berdasarkan pengolahan data survei terhadap <strong>215 responden</strong> yang dilaksanakan pada periode <strong>10 – 22 Agustus 2026</strong>, Pemerintah Desa Sijenggung memperoleh predikat <strong>Baik (Mutu B)</strong> untuk SKM dengan IKM sebesar <strong>{ikmScore.toFixed(2)}</strong> dan predikat <strong>{perilakuGrade?.label ?? 'Baik'}</strong> untuk SPAK dengan skor rata-rata <strong>{totalPerilaku.toFixed(2)}</strong>. Guna meningkatkan kualitas pelayanan publik secara berkelanjutan, berikut adalah area yang perlu terus diperkuat:
           </p>
 
           <div className="pl-4 border-l-2 border-slate-400 space-y-1.5 italic text-[11px]">
-            <p>1. Mempertahankan budaya pelayanan ramah, sopan, dan tanpa pungutan biaya apapun (100% Gratis).</p>
-            <p>2. Memperluas keterbukaan informasi publik dan optimalisasi media digital dalam penanganan aspirasi warga.</p>
-            <p>3. Meningkatkan koordinasi berkala antara perangkat desa, BPD, dan tokoh masyarakat untuk pencegahan fraud.</p>
+            <p>1. Meningkatkan sarana dan prasarana kantor desa (komputer, jaringan, dan ruang tunggu) untuk mendukung efisiensi layanan.</p>
+            <p>2. Mempercepat waktu tunggu dan waktu penyelesaian setiap jenis layanan dengan sistem nomor antrian yang tertib.</p>
+            <p>3. Memperkuat mekanisme penanganan pengaduan masyarakat agar lebih responsif dan terukur waktu penyelesaiannya.</p>
+            <p>4. Meningkatkan konsistensi informasi persyaratan pelayanan melalui papan informasi dan media sosial resmi desa.</p>
+            <p>5. Mengintensifkan sosialisasi nilai-nilai antikorupsi kepada perangkat desa dan masyarakat Sijenggung secara berkelanjutan.</p>
           </div>
 
           <p>
