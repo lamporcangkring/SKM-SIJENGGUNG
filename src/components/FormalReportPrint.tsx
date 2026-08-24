@@ -163,9 +163,17 @@ export function FormalReportPrint() {
         <h3 className="font-bold text-sm mb-2 uppercase border-b border-black pb-1">
           BAB I. PENDAHULUAN & METODOLOGI DEMOGRAFI
         </h3>
-        <p className="mb-3 text-justify text-xs">
-          Survei Kepuasan Masyarakat (SKM) dan Survei Persepsi Perilaku Antikorupsi (SPAK) Pemerintah Desa Sijenggung diselenggarakan pada tanggal <strong>{surveyDateStr}</strong> rentang waktu pukul <strong>{surveyTimeStr}</strong>. Penyelenggaraan survei ini diikuti secara aktif oleh sebanyak <strong>{count} responden warga Desa Sijenggung</strong> yang mengakses berbagai layanan publik kantor desa.
-        </p>
+        <div className="space-y-3 text-justify text-xs mb-4">
+          <p>
+            Undang-Undang Nomor 25 Tahun 2009 tentang Pelayanan Publik mengamanatkan bahwa setiap penyelenggara pelayanan publik wajib melakukan evaluasi secara berkala terhadap kinerja pelayanan yang diberikan. Sejalan dengan amanat tersebut, Pemerintah Desa Sijenggung, Kecamatan Banjarmangu, Kabupaten Banjarnegara berkomitmen untuk senantiasa meningkatkan mutu pelayanan demi terwujudnya tata kelola pemerintahan desa yang bersih, transparan, akuntabel, dan berorientasi sepenuhnya pada kepentingan masyarakat warga.
+          </p>
+          <p>
+            Sebagai instrumen evaluasi yang obyektif dan terukur, dilaksanakanlah Survei Kepuasan Masyarakat (SKM) berdasarkan Peraturan Menteri Pendayagunaan Aparatur Negara dan Reformasi Birokrasi (PermenPAN-RB) Nomor 14 Tahun 2017. Guna melengkapi evaluasi tersebut dari aspek integritas pelayanan publik, diselenggarakan pula Survei Persepsi Perilaku Antikorupsi (SPAK) yang merujuk pada PermenPAN-RB Nomor 90 Tahun 2021.
+          </p>
+          <p>
+            Survei ini diselenggarakan secara berkala dan terstruktur pada tanggal <strong>{surveyDateStr}</strong> dalam rentang waktu pukul <strong>{surveyTimeStr}</strong>. Melalui pengumpulan data yang melibatkan <strong>{count} responden aktif</strong> dari berbagai elemen demografi warga Desa Sijenggung, survei ini memotret secara riil persepsi masyarakat terhadap 9 unsur pelayanan publik dan 7 indikator perilaku antikorupsi di lingkungan kantor desa.
+          </p>
+        </div>
 
         {/* Tabel Rekap Demografi */}
         <div className="grid grid-cols-2 gap-4 mb-4">
@@ -236,29 +244,25 @@ export function FormalReportPrint() {
 
         {/* Visualisasi Grafik Demografi */}
         <div className="grid grid-cols-2 gap-4 mt-2">
-          <div className="border border-slate-300 rounded p-2 text-center">
+          <div className="border border-slate-300 rounded p-2 text-center flex flex-col items-center justify-center">
             <h6 className="font-bold text-[10px] mb-1">Grafik Proporsi Jenis Kelamin</h6>
-            <div className="h-36">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie data={demografiData.jenisKelamin} cx="50%" cy="50%" outerRadius={42} dataKey="value" isAnimationActive={false} label={renderOutsideLabel}>
-                    {demografiData.jenisKelamin.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
+            <div className="h-36 w-full flex items-center justify-center">
+              <PieChart width={300} height={140}>
+                <Pie data={demografiData.jenisKelamin} cx="50%" cy="50%" outerRadius={42} dataKey="value" isAnimationActive={false} label={renderOutsideLabel}>
+                  {demografiData.jenisKelamin.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                </Pie>
+              </PieChart>
             </div>
           </div>
 
-          <div className="border border-slate-300 rounded p-2 text-center">
+          <div className="border border-slate-300 rounded p-2 text-center flex flex-col items-center justify-center">
             <h6 className="font-bold text-[10px] mb-1">Grafik Pekerjaan Utama Responden</h6>
-            <div className="h-36">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie data={demografiData.pekerjaan} cx="50%" cy="50%" outerRadius={42} dataKey="value" isAnimationActive={false} label={renderOutsideLabel}>
-                    {demografiData.pekerjaan.map((_, i) => <Cell key={i} fill={COLORS[(i+2) % COLORS.length]} />)}
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
+            <div className="h-36 w-full flex items-center justify-center">
+              <PieChart width={300} height={140}>
+                <Pie data={demografiData.pekerjaan} cx="50%" cy="50%" outerRadius={42} dataKey="value" isAnimationActive={false} label={renderOutsideLabel}>
+                  {demografiData.pekerjaan.map((_, i) => <Cell key={i} fill={COLORS[(i+2) % COLORS.length]} />)}
+                </Pie>
+              </PieChart>
             </div>
           </div>
         </div>
@@ -275,17 +279,15 @@ export function FormalReportPrint() {
         </p>
 
         {/* Grafik SKM */}
-        <div className="border border-slate-300 rounded p-3 mb-4 text-center">
+        <div className="border border-slate-300 rounded p-3 mb-4 text-center flex flex-col items-center justify-center">
           <h5 className="font-bold text-xs mb-2">Nilai Rata-Rata (NRR) Per 9 Unsur Pelayanan Publik</h5>
-          <div className="h-48 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={skmAverages} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="id" tick={{ fontSize: 10 }} />
-                <YAxis domain={[0, 4]} tick={{ fontSize: 10 }} />
-                <Bar dataKey="avg" fill="#0284c7" isAnimationActive={false} />
-              </BarChart>
-            </ResponsiveContainer>
+          <div className="h-48 w-full flex items-center justify-center">
+            <BarChart width={650} height={180} data={skmAverages} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="id" tick={{ fontSize: 10 }} />
+              <YAxis domain={[0, 4]} tick={{ fontSize: 10 }} />
+              <Bar dataKey="avg" fill="#0284c7" isAnimationActive={false} />
+            </BarChart>
           </div>
         </div>
 
@@ -373,19 +375,22 @@ export function FormalReportPrint() {
         
         <div className="space-y-3 text-xs text-justify">
           <p>
-            Berdasarkan pengolahan data survei terhadap <strong>{count} responden</strong> yang dilaksanakan pada periode <strong>{surveyDateStr}</strong>, Pemerintah Desa Sijenggung memperoleh predikat <strong>Baik (Mutu B)</strong> untuk SKM dengan IKM sebesar <strong>{ikmScore.toFixed(2)}</strong> dan predikat <strong>{perilakuGrade?.label ?? 'Baik'}</strong> untuk SPAK dengan skor rata-rata <strong>{totalPerilaku.toFixed(2)}</strong>. Guna meningkatkan kualitas pelayanan publik secara berkelanjutan, berikut adalah area yang perlu terus diperkuat:
+            Berdasarkan pengolahan data dan evaluasi komprehensif terhadap seluruh respon dari <strong>{count} responden</strong> yang dihimpun selama periode pelaksanaan survei dari <strong>{surveyDateStr}</strong>, Pemerintah Desa Sijenggung memperoleh predikat <strong>{skmGrade.label} (Mutu {skmGrade.grade})</strong> untuk indeks SKM dengan pencapaian skor konversi sebesar <strong>{ikmScore.toFixed(2)}</strong>. Sementara itu, untuk indeks SPAK, Pemerintah Desa Sijenggung mencatatkan predikat <strong>{perilakuGrade?.label ?? 'Baik'}</strong> dengan nilai rata-rata indeks sebesar <strong>{totalPerilaku.toFixed(2)}</strong> (dari skala maksimal 4.00).
+          </p>
+          <p>
+            Meskipun pencapaian ini berada pada kategori yang sangat positif dan mencerminkan tingginya tingkat kepuasan serta kepercayaan warga terhadap dedikasi pelayanan Pemerintah Desa Sijenggung, upaya perbaikan yang berkelanjutan (continuous improvement) harus tetap diprioritaskan. Berdasarkan analisis unsur-unsur yang memperoleh penilaian paling rendah, disimpulkan beberapa rumusan rencana tindak lanjut strategis yang mendesak untuk diimplementasikan:
           </p>
 
-          <div className="pl-4 border-l-2 border-slate-400 space-y-1.5 italic text-[11px]">
-            <p>1. Meningkatkan sarana dan prasarana kantor desa (komputer, jaringan, dan ruang tunggu) untuk mendukung efisiensi layanan.</p>
-            <p>2. Mempercepat waktu tunggu dan waktu penyelesaian setiap jenis layanan dengan sistem nomor antrian yang tertib.</p>
-            <p>3. Memperkuat mekanisme penanganan pengaduan masyarakat agar lebih responsif dan terukur waktu penyelesaiannya.</p>
-            <p>4. Meningkatkan konsistensi informasi persyaratan pelayanan melalui papan informasi dan media sosial resmi desa.</p>
-            <p>5. Mengintensifkan sosialisasi nilai-nilai antikorupsi kepada perangkat desa dan masyarakat Sijenggung secara berkelanjutan.</p>
+          <div className="pl-4 border-l-2 border-slate-400 space-y-1.5 italic text-[11px] my-2">
+            <p>1. <strong>Peningkatan Infrastruktur Pelayanan:</strong> Melakukan perbaikan dan penambahan sarana fisik pendukung di ruang pelayanan kantor desa (seperti penyejuk ruangan, komputer pelayanan mandiri, jaringan internet yang stabil, serta penyediaan fasilitas ramah disabilitas) untuk meningkatkan kenyamanan warga.</p>
+            <p>2. <strong>Optimalisasi Waktu Pelayanan:</strong> Menyusun standar operasional prosedur (SOP) waktu penyelesaian yang lebih ketat, serta mengadopsi sistem nomor antrean digital guna meminimalisir waktu tunggu warga pada loket-loket pelayanan utama.</p>
+            <p>3. <strong>Respon Cepat Pengaduan Warga:</strong> Mengembangkan dan mengintegrasikan sistem pengelolaan pengaduan masyarakat (SP4N-LAPOR! desa atau kotak saran digital) agar setiap keluhan warga dapat ditangani dan direspon secara cepat, transparan, dan terukur.</p>
+            <p>4. <strong>Transparansi Informasi Publik:</strong> Meningkatkan kemudahan akses informasi mengenai persyaratan, tarif (jika ada), dan alur pelayanan dengan menyediakannya secara lengkap pada media luar ruang (baliho/papan pengumuman) dan portal digital resmi Desa Sijenggung.</p>
+            <p>5. <strong>Pembudayaan Integritas:</strong> Menyelenggarakan program sosialisasi dan pelatihan internal secara periodik bagi seluruh aparatur desa mengenai nilai-nilai antikorupsi, kepatuhan kode etik, pelayanan prima (service excellence), serta pencegahan segala bentuk gratifikasi.</p>
           </div>
 
           <p>
-            Demikian laporan ini dibuat secara akuntabel dan transparan sebagai wujud pertanggungjawaban publik Pemerintah Desa Sijenggung.
+            Laporan resmi eksekutif hasil survei kepuasan masyarakat dan persepsi anti korupsi ini disusun dengan menjunjung tinggi asas akuntabilitas, kejujuran, dan transparansi yang utuh. Dokumen ini diharapkan dapat menjadi rujukan berharga bagi perbaikan kualitas pelayanan Pemerintah Desa Sijenggung ke depan, sekaligus sebagai wujud pertanggungjawaban moral dan administratif kepada warga Desa Sijenggung serta instansi pembina di tingkat Kecamatan Banjarmangu dan Kabupaten Banjarnegara.
           </p>
         </div>
       </div>
