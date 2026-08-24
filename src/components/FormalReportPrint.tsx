@@ -97,7 +97,23 @@ export function FormalReportPrint() {
   };
 
   return (
-    <div className="hidden print:block w-full bg-white text-slate-900 font-sans text-xs pb-12 leading-relaxed">
+    <div className="hidden print:block w-full bg-white text-slate-900 font-sans text-xs pb-12 leading-relaxed relative print:p-8">
+      
+      {/* ── BINGKAI HALAMAN (PAGE BORDER) ─────────────────────── */}
+      <div className="fixed inset-4 border-4 border-double border-black pointer-events-none z-50 print:block hidden" />
+
+      {/* ── TANDA AIR (WATERMARK) ────────────────────────────── */}
+      <div 
+        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.03] pointer-events-none z-0 print:block hidden"
+        style={{
+          width: '450px',
+          height: '450px',
+          backgroundImage: "url('/logo-banjarnegara.png')",
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center',
+          backgroundSize: 'contain',
+        }}
+      />
       
       {/* ── KOP SURAT RESMI PEMERINTAH DESA ───────────────────── */}
       <div className="border-b-4 border-double border-black pb-4 mb-6 relative flex items-center justify-center">
