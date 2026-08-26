@@ -541,14 +541,16 @@ export function PublicPortal() {
             {/* QR Code Graphic Langsung Menuju /survei */}
             <div className="bg-white p-4 rounded-2xl inline-block shadow-lg border border-slate-200 mb-4">
               <img 
-                src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=http%3A%2F%2Flocalhost%3A3000%2Fsurvei" 
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
+                  (typeof window !== 'undefined' ? window.location.origin : 'https://skm-sijenggung.netlify.app') + '/survei'
+                )}`}
                 alt="QR Code Formulir Survei Desa Sijenggung"
                 className="w-44 h-44 mx-auto rounded-lg"
               />
             </div>
 
             <div className="text-[11px] font-semibold text-cyan-500 mb-5">
-              URL: http://localhost:3000/survei
+              URL: {(typeof window !== 'undefined' ? window.location.origin : 'https://skm-sijenggung.netlify.app') + '/survei'}
             </div>
 
             <button

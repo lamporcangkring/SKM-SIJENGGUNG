@@ -29,7 +29,9 @@ interface SurveyContextType {
   refreshResponses: () => Promise<void>;
 }
 
-const API_BASE = 'http://localhost:3001/api';
+const API_BASE = typeof window !== 'undefined'
+  ? `${window.location.protocol}//${window.location.hostname}:3001/api`
+  : 'http://localhost:3001/api';
 
 export const SurveyContext = createContext<SurveyContextType | undefined>(undefined);
 
