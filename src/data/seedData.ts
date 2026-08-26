@@ -68,12 +68,61 @@ const COMMENTS_POOL = [
 ];
 
 // ── Distribusi harian: 255 responden tersebar 30 Juni – 19 Agustus 2026 ──
-// 51 Hari (36 hari kerja efektif, libur weekend & 17 Agustus)
+// 51 Hari (36 hari kerja efektif, libur weekend & 17 Agustus ────────────────
+// Dibuat bervariasi (trend menurun natural: awal survei rame → stabil → menitir sedikit)
 
-const DAILY_SCHEDULE = [
-  8,8,8,7,0,0,7,7,7,7,7,0,0,7,7,7,7,7,0,0,7,7,7,7,7,0,0,7,7,7,7,7,0,0,7,7,7,7,7,0,0,7,7,7,7,7,0,0,0,7,7
-];
-// Verifikasi total: 255 ✅
+const DAILY_SCHEDULE: number[] = (() => {
+  const TOTAL_DAYS = 51;
+  const TOTAL_TARGET = 255;
+  const WORKDAY_COUNT = 36;
+
+  // Index hari libur sesuai periode: 4,5 (week1); 11,12; 18,19; 25,26; 32,33; 39,40; 46,47,48 (libur 17-19)
+  const holidaySet = new Set<number>([4, 5, 11, 12, 18, 19, 25, 26, 32, 33, 39, 40, 46, 47, 48]);
+
+  // Seeded pseudo-random (deterministik — tidak berubah tiap reload)
+  const rand = (seed: number) => ((Math.abs(Math.sin(seed * 9301 + 49297) * 233280)) % 1);
+
+  // 1. Generate 36 nilai hari kerja dengan trend awal ↑ tengah stabil ↓ akhir
+  const workdays: number[] = [];
+  for (let i = 0; i < WORKDAY_COUNT; i++) {
+    // Trend factor: 1.0 → 0.40 (awal lebih ramai, lalu menurun)
+    const trend = 1 - (i / WORKDAY_COUNT) * 0.60;
+    const base = 4.5 + trend * 9;      // 13.5 → ~8.1
+    const wave = Math.sin((i / 7) * 1.3);     // fluktuasi mingguan
+    const noise = (rand(i + 5) - 0.5) * 4;
+    let v = Math.max(2, Math.round(base + wave + noise));
+    if (v > 14) v = 14;
+    workdays.push(v);
+  }
+
+  // 2. Normalisasi agar total = 255 (turunkan / naikkan secara acak sampai tepat
+  let current = workdays.reduce((a, b) => a + b, 0);
+  let guard = 0;
+  while (current !== TOTAL_TARGET && guard < 5000) {
+    const diff = current > TOTAL_TARGET ? -1 : 1;
+    for (let i = 0; i < WORKDAY_COUNT && current !== TOTAL_TARGET; i++) {
+      const pick = Math.floor(rand(1000 + Math.abs(current) + i * 7) % WORKDAY_COUNT);
+      if (diff < 0 && workdays[pick] > 3) {
+        workdays[pick]--;
+        current--;
+      }
+      if (diff > 0 && workdays[pick] < 14) {
+        workdays[pick]++;
+        current++;
+      }
+    }
+    guard++;
+  }
+
+  // 3. Masukkan ke array 51 hari
+  const schedule: number[] = [];
+  let wi = 0;
+  for (let d = 0; d < TOTAL_DAYS; d++) {
+    schedule.push(holidaySet.has(d) ? 0 : workdays[wi++]);
+  }
+  return schedule;
+})();
+// Verifikasi total (runtime): DAILY_SCHEDULE.reduce((a,b)=>a+b,0) === 255
 
 
 // ── Pseudo-random helper ─────────────────────────────────────────
